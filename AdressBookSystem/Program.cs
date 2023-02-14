@@ -6,9 +6,13 @@
         {
             Console.WriteLine("Welcome to Adress Book System Program !");
 
-            // add a new contact
+            //Create contact
             CreateContact.PersonDetails();
             Console.ReadLine();
+
+            //add a new contact
+            AddContact.GetCustomer();
+            AddContact.ListingPeople();
         }
     }
 }
