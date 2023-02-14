@@ -6,294 +6,338 @@ using System.Threading.Tasks;
 
 namespace AdressBookSystem
 {
-    public interface IAddressBookSystem
+    class AddressBook : IContacts  //Using and inheriting from the Icnotacts interface created 
     {
-        void ListingPeople();
-        void RemovePeople();
-    }
-    public class AddrBook : IAddressBookSystem
-    {
-        public static Dictionary<string, List<AddrBook>> City = new Dictionary<string, List<AddrBook>>();
-        public static Dictionary<string, List<AddrBook>> State = new Dictionary<string, List<AddrBook>>();
-        public List<AddrBook> stateList;
-        public List<AddrBook> cityList;
-        public List<AddrBook> people;
-        public AddrBook()
+        //First dictionary to store a simple contactbook
+        private Dictionary<string, Contact> addressBook = new Dictionary<string, Contact>();
+
+        //second dictionary to store multiple contactbooks
+        private Dictionary<string, AddressBook> addressBookDictionary = new Dictionary<string, AddressBook>();
+
+        //Dictionaries to store filtered city and state information
+        private Dictionary<Contact, string> cityDictionary = new Dictionary<Contact, string>();
+        private Dictionary<Contact, string> stateDictionary = new Dictionary<Contact, string>();
+
+        //Method to add contact info for each person
+        public void AddContact(string firstName, string lastName, string address, string city, string state, string email, int zip, long phoneNumber, string bookName)
         {
-            people = new List<AddrBook>();
-        }
-        public string firstName;
-        public string lastName;
-        public string address;
-        public string city;
-        public string state;
-        public string zipCode;
-        public string phoneNum;
-        public string emailId;
-        public AddrBook(string firstName, string lastName, string address, string city, string state, string zip, string phoneNumber, string email)
-        {
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.address = address;
-            this.city = city;
-            this.state = state;
-            this.zipCode = zip;
-            this.phoneNum = phoneNumber;
-            this.emailId = email;
+            Contact contact = new Contact(firstName, lastName, address, city, state, email, zip, phoneNumber);
+            addressBookDictionary[bookName].addressBook.Add(contact.FirstName, contact);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\nAdded Succesfully. \n");
+            Console.ResetColor();
 
         }
-        //Getting the user details
-        public void GetCustomer(string firstName, string lastName, string phoneNum, string address, string city, string state, string zipCode, string emailId)
+
+        //Method to display contact info for a person
+        public void ViewContact(string name, string bookName)
         {
-            int contact = 0;
-            AddrBook person = new AddrBook(firstName, lastName, phoneNum, address, city, state, zipCode, emailId);
-            if (contact == 0)
+            foreach (KeyValuePair<string, Contact> item in addressBookDictionary[bookName].addressBook)
             {
-
-                people.Add(person);
-                if (State.ContainsKey(state))
+                if (item.Key.ToLower().Equals(name.ToLower()))
                 {
-                    List<AddrBook> existing = State[state];
-                    existing.Add(person);
-
+                    Console.WriteLine("First Name : " + item.Value.FirstName);
+                    Console.WriteLine("Last Name : " + item.Value.LastName);
+                    Console.WriteLine("Address : " + item.Value.Address);
+                    Console.WriteLine("City : " + item.Value.City);
+                    Console.WriteLine("State : " + item.Value.State);
+                    Console.WriteLine("Email : " + item.Value.Email);
+                    Console.WriteLine("Zip : " + item.Value.Zip);
+                    Console.WriteLine("Phone Number : " + item.Value.PhoneNumber + "\n");
                 }
-                else
-                {
-                    stateList = new List<AddrBook>();
-                    stateList.Add(person);
-                    State.Add(state, stateList);
-
-                }
-                if (City.ContainsKey(city))
-                {
-                    List<AddrBook> existing = City[city];
-                    existing.Add(person);
-
-                }
-                else
-                {
-                    cityList = new List<AddrBook>();
-                    cityList.Add(person);
-                    City.Add(city, cityList);
-
-                }
-                contact++;
             }
-            else if (contact != 0)
+        }
+
+        //Method to display contacts from a contactbook/addressbook
+        public void ViewContact(string bookName)
+        {
+            foreach (KeyValuePair<string, Contact> item in addressBookDictionary[bookName].addressBook)
             {
-                //Checking duplicates
-                AddrBook addressBookSystems = people.Find(x => x.firstName.Equals(firstName));
-                if (addressBookSystems == null)
+                Console.WriteLine("First Name : " + item.Value.FirstName);
+                Console.WriteLine("Last Name : " + item.Value.LastName);
+                Console.WriteLine("Address : " + item.Value.Address);
+                Console.WriteLine("City : " + item.Value.City);
+                Console.WriteLine("State : " + item.Value.State);
+                Console.WriteLine("Email : " + item.Value.Email);
+                Console.WriteLine("Zip : " + item.Value.Zip);
+                Console.WriteLine("Phone Number : " + item.Value.PhoneNumber + "\n");
+            }
+        }
+
+        //Method to edit the present addressbook/contact
+        public void EditContact(string name, string bookName)
+        {
+            foreach (KeyValuePair<string, Contact> item in addressBookDictionary[bookName].addressBook)
+            {
+                if (item.Key.Equals(name))
                 {
-                    person = new AddrBook(firstName, lastName, address, city, state, zipCode, phoneNum, emailId);
-                    people.Add(person);
-                    if (State.ContainsKey(state))
+                    Console.WriteLine("Choose the field to edit \n1.First Name \n2.Last Name \n3.Address \n4.City \n5.State \n6.Email \n7.Zip \n8.Phone Number");
+                    int choice = Convert.ToInt32(Console.ReadLine());
+                    switch (choice)
                     {
-                        List<AddrBook> existing = State[state];
-                        existing.Add(person);
-
+                        case 1:
+                            Console.Write("Enter New First Name :");
+                            item.Value.FirstName = Console.ReadLine();
+                            break;
+                        case 2:
+                            Console.Write("Enter New Last Name :");
+                            item.Value.LastName = Console.ReadLine();
+                            break;
+                        case 3:
+                            Console.Write("Enter New Address :");
+                            item.Value.Address = Console.ReadLine();
+                            break;
+                        case 4:
+                            Console.Write("Enter New City :");
+                            item.Value.City = Console.ReadLine();
+                            break;
+                        case 5:
+                            Console.Write("Enter New State :");
+                            item.Value.State = Console.ReadLine();
+                            break;
+                        case 6:
+                            Console.Write("Enter New Email :");
+                            item.Value.Email = Console.ReadLine();
+                            break;
+                        case 7:
+                            Console.Write("Enter New Zip :");
+                            item.Value.Zip = Convert.ToInt32(Console.ReadLine());
+                            break;
+                        case 8:
+                            Console.Write("Enter New Phone Number :");
+                            item.Value.PhoneNumber = Convert.ToInt64(Console.ReadLine());
+                            break;
                     }
-                    else
-                    {
-                        stateList = new List<AddrBook>();
-                        stateList.Add(person);
-                        State.Add(state, stateList);
-
-                    }
-                    if (City.ContainsKey(city))
-                    {
-                        List<AddrBook> existing = City[city];
-                        existing.Add(person);
-
-                    }
-                    else
-                    {
-                        cityList = new List<AddrBook>();
-                        cityList.Add(person);
-                        City.Add(city, cityList);
-
-                    }
-                    contact++;
-                }
-                else
-                {
-                    Console.WriteLine("This person already exists in your AddressBook!");
-                }
-
-            }
-        }
-        //Print the details
-        public void PrintCustomer(AddrBook person)
-        {
-            Console.WriteLine("First Name: " + person.firstName);
-            Console.WriteLine("Last Name: " + person.lastName);
-            Console.WriteLine("Phone Number: " + person.phoneNum);
-            Console.WriteLine("Address : " + person.address);
-            Console.WriteLine("City : " + person.city);
-            Console.WriteLine("State : " + person.state);
-            Console.WriteLine("ZipCode : " + person.zipCode);
-            Console.WriteLine("Email Id: " + person.emailId);
-            Console.WriteLine("-------------------------------------------");
-        }
-        //Modify the details
-        public void Modify()
-        {
-            if (people.Count != 0)
-            {
-                Console.WriteLine("Enter the contact to modify:");
-                string Modified = Console.ReadLine();
-                foreach (var person in people)
-                {
-                    if (person.firstName.ToUpper() == Modified.ToUpper())
-                    {
-                        while (true)
-                        {
-                            Console.WriteLine("Enter the option to modify the property: ");
-                            Console.WriteLine("Enter 1 to Change First name ");
-                            Console.WriteLine("Enter 2 to Change Last name ");
-                            Console.WriteLine("Enter 3 to Change Phone Number ");
-                            Console.WriteLine("Enter 4 to Change Address ");
-                            Console.WriteLine("Enter 5 to Change City ");
-                            Console.WriteLine("Enter 6 to Change State ");
-                            Console.WriteLine("Enter 7 to Change Pincode ");
-                            Console.WriteLine("Enter 8 to Exit ");
-                            int Check = Convert.ToInt32(Console.ReadLine());
-                            switch (Check)
-                            {
-                                case 1:
-                                    Console.WriteLine("Enter the New First Name: ");
-                                    person.firstName = Console.ReadLine();
-                                    break;
-                                case 2:
-                                    Console.WriteLine("Enter the New Last Name: ");
-                                    person.lastName = Console.ReadLine();
-                                    break;
-                                case 3:
-                                    Console.WriteLine("Enter the New Phone Number: ");
-                                    person.phoneNum = Console.ReadLine();
-                                    break;
-                                case 4:
-                                    Console.WriteLine("Enter the New Address: ");
-                                    person.address = Console.ReadLine();
-                                    break;
-                                case 5:
-                                    Console.WriteLine("Enter the New City: ");
-                                    person.city = Console.ReadLine();
-                                    break;
-                                case 6:
-                                    Console.WriteLine("Enter the New State: ");
-                                    person.state = Console.ReadLine();
-                                    break;
-                                case 7:
-                                    Console.WriteLine("Enter the New Pin Code: ");
-                                    person.zipCode = Console.ReadLine();
-                                    break;
-                                case 8:
-                                    return;
-
-                            }
-
-                        }
-
-                    }
-                    else
-                    {
-                        Console.WriteLine("Enter the valid name!");
-                    }
-
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("\nEdited Successfully.\n");
+                    Console.ResetColor();
                 }
             }
         }
-        //Listing the user entered details or modified details
-        public void ListingPeople()
-        {
-            if (people.Count == 0)
-            {
-                Console.WriteLine("Your address book is empty.");
-                Console.ReadKey();
-                return;
-            }
-            Console.WriteLine("Here are the current people in your address book:\n");
-            foreach (var person in people)
-            {
-                PrintCustomer(person);
-            }
-            return;
 
-        }
-        //Removing the field using Lambda Function
-        public void RemovePeople()
+        //Logic to delete contacts from the book
+        public void DeleteContact(string name, string bookName)
         {
-            Console.WriteLine("Enter the first name of the person you would like to remove.");
-            string firstName = Console.ReadLine();
-            AddrBook person = people.FirstOrDefault(x => x.firstName.ToUpper() == firstName.ToUpper());
-            if (person == null)
+            if (addressBookDictionary[bookName].addressBook.ContainsKey(name))
             {
-                Console.WriteLine("That person could not be found..");
+                addressBookDictionary[bookName].addressBook.Remove(name);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("\nDeleted Succesfully.\n");
+                Console.ResetColor();
 
-                return;
-            }
-            Console.WriteLine("Are you sure you want to remove this person from your address book? (Y/N)");
-            if (Console.ReadKey().Key == ConsoleKey.Y)
-            {
-                people.Remove(person);
-                Console.WriteLine("\nPerson removed ");
-
-            }
-        }
-        //Display Person names found in given City
-        public static void StoreCityList(string key, List<AddrBook> cityList, string city)
-        {
-            List<AddrBook> CityList = cityList.FindAll(a => a.city.ToLower() == city);
-            foreach (var i in CityList)
-            {
-                Console.WriteLine("Found person \"{0}\" in Address Book \"{1}\" , residing in City {2}", i.firstName, key, i.city);
-            }
-        }
-        //Display Person names found in given State
-        public static void StoreStateList(string key, List<AddrBook> stateList, string state)
-        {
-            List<AddrBook> StateList = stateList.FindAll(x => x.state.ToLower() == state);
-            foreach (var i in StateList)
-            {
-                Console.WriteLine("Found person \"{0}\" in Address Book \"{1}\" , residing in State {2}", i.firstName, key, i.state);
-            }
-        }
-        public static void DisplayCityorState()
-        {
-            Console.WriteLine("Enter 1-To view City list\n Enter 2-To view State list");
-            int citystate = Convert.ToInt32(Console.ReadLine());
-            if (citystate == 1)
-            {
-                foreach (var i in City)
-                {
-                    Console.WriteLine("Display List for City: {0}\n", i.Key);
-                    foreach (var j in i.Value)
-                    {
-                        Console.WriteLine("Found person \"{0} {1}\" , residing in City {2}", j.firstName, j.lastName, j.city);
-                    }
-
-
-                }
             }
             else
             {
-                foreach (var a in State)
-                {
-                    Console.WriteLine("Display List for State: {0}\n", a.Key);
-                    foreach (var b in a.Value)
-                    {
-                        Console.WriteLine("Found person \"{0} {1}\" , residing in State {2}", b.firstName, b.lastName, b.state);
-                    }
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\nNot Found, Try Again.\n");
+                Console.ResetColor();
 
+            }
+        }
+
+        //Add a book to the address dictionary/database
+        public void AddAddressBook(string bookName)
+        {
+            AddressBook addressBook = new AddressBook();
+            addressBookDictionary.Add(bookName, addressBook);
+            Console.WriteLine("AddressBook Created.");
+        }
+        public Dictionary<string, AddressBook> GetAddressBook()
+        {
+            return addressBookDictionary;
+        }
+
+
+        //logic to attain values 
+        public List<Contact> GetListOfDictionaryValues(string bookName)
+        {
+            List<Contact> book = new List<Contact>();
+            foreach (var value in addressBookDictionary[bookName].addressBook.Values)
+            {
+                book.Add(value);
+            }
+            return book;
+        }
+
+        //logic to attain keys
+        public List<Contact> GetListOfDictionaryKeys(Dictionary<Contact, string> d)
+        {
+            List<Contact> book = new List<Contact>();
+            foreach (var value in d.Keys)
+            {
+                book.Add(value);
+            }
+            return book;
+        }
+
+        //Logic for duplicate entry check
+        public bool CheckDuplicateEntry(Contact c, string bookName)
+        {
+            List<Contact> book = GetListOfDictionaryValues(bookName);
+            if (book.Any(b => b.Equals(c)))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Name already Exists.");
+                Console.ResetColor();
+                return true;
+            }
+            return false;
+        }
+
+
+
+        //Logic/method to search Person by city
+        public void SearchPersonByCity(string city)
+        {
+            foreach (AddressBook addressbookobj in addressBookDictionary.Values)
+            {
+                CreateCityDictionary();
+                List<Contact> contactList = GetListOfDictionaryKeys(addressbookobj.cityDictionary);
+                foreach (Contact contact in contactList.FindAll(c => c.City.Equals(city)).ToList())
+                {
+                    Console.WriteLine(contact.ToString());
+                }
+            }
+        }
+
+        //Logic/method to search Person by state
+        public void SearchPersonByState(string state)
+        {
+            foreach (AddressBook addressbookobj in addressBookDictionary.Values)
+            {
+                CreateStateDictionary();
+                List<Contact> contactList = GetListOfDictionaryKeys(addressbookobj.stateDictionary);
+                foreach (Contact contact in contactList.FindAll(c => c.State.Equals(state)).ToList())
+                {
+                    Console.WriteLine(contact.ToString());
+                }
+            }
+        }
+
+        //method to create the required city dictionary
+        public void CreateCityDictionary()
+        {
+            foreach (AddressBook addressBookObj in addressBookDictionary.Values)
+            {
+                foreach (Contact contact in addressBookObj.addressBook.Values)
+                {
+                    addressBookObj.cityDictionary.Add(contact, contact.City);
+                }
+            }
+        }
+
+        //method to create the required state dictionary
+        public void CreateStateDictionary()
+        {
+            foreach (AddressBook addressBookObj in addressBookDictionary.Values)
+            {
+                foreach (Contact contact in addressBookObj.addressBook.Values)
+                {
+                    addressBookObj.stateDictionary.Add(contact, contact.State);
+                }
+            }
+        }
+
+
+        //Method to Display contact count on the basis of city or state 
+        public void DisplayCountByCityandState()
+        {
+            CreateCityDictionary();
+            CreateStateDictionary();
+            Dictionary<string, int> countByCity = new Dictionary<string, int>();
+            Dictionary<string, int> countByState = new Dictionary<string, int>();
+            foreach (var obj in addressBookDictionary.Values)
+            {
+                foreach (var person in obj.cityDictionary)
+                {
+                    countByCity.TryAdd(person.Value, 0);  //If the key already exists, TryAdd does nothing and returns false
+                    countByCity[person.Value]++;
+                }
+            }
+            Console.WriteLine("City wise count :");
+            foreach (var person in countByCity)
+            {
+                Console.WriteLine(person.Key + ":" + person.Value);
+            }
+            foreach (var obj in addressBookDictionary.Values)
+            {
+                foreach (var person in obj.stateDictionary)
+                {
+                    countByState.TryAdd(person.Value, 0);
+                    countByState[person.Value]++;
+                }
+            }
+            Console.WriteLine("State wise count :");
+            foreach (var person in countByState)
+            {
+                Console.WriteLine(person.Key + ":" + person.Value);
+            }
+        }
+
+        public void SortByName()
+        {
+            foreach (AddressBook addressBookobj in addressBookDictionary.Values)
+            {
+                List<string> list = addressBookobj.addressBook.Keys.ToList();
+                list.Sort();
+                foreach (string name in list)
+                {
+                    Console.WriteLine(addressBookobj.addressBook[name].ToString());
+                }
+            }
+        }
+
+        public void SortByCity()
+        {
+            CreateCityDictionary();
+            Dictionary<string, Contact> inverseCityDictionary = new Dictionary<string, Contact>();
+            foreach (AddressBook obj in addressBookDictionary.Values)
+            {
+                foreach (Contact contact in obj.cityDictionary.Keys)
+                {
+                    inverseCityDictionary.TryAdd(contact.City, contact);
+                }
+            }
+            List<string> list = inverseCityDictionary.Keys.ToList();
+            list.Sort();
+            foreach (string city in list)
+            {
+                Console.WriteLine(inverseCityDictionary[city].ToString());
+            }
+        }
+        public void SortByState()
+        {
+            CreateStateDictionary();
+            Dictionary<string, Contact> inverseStateDictionary = new Dictionary<string, Contact>();
+            foreach (AddressBook obj in addressBookDictionary.Values)
+            {
+                foreach (Contact contact in obj.stateDictionary.Keys)
+                {
+                    inverseStateDictionary.TryAdd(contact.State, contact);
+                }
+            }
+            List<string> list = inverseStateDictionary.Keys.ToList();
+            list.Sort();
+            foreach (string state in list)
+            {
+                Console.WriteLine(inverseStateDictionary[state].ToString());
+            }
+        }
+        public void SortByZip()
+        {
+            SortedList<int, Contact> sortedbyCity = new SortedList<int, Contact>();
+            foreach (AddressBook addressBookobj in addressBookDictionary.Values)
+            {
+                foreach (Contact contact in addressBookobj.addressBook.Values)
+                {
+                    sortedbyCity.TryAdd(contact.Zip, contact);
                 }
             }
 
-        }
-
-        internal static void SortContactPerson(Dictionary<string, List<AddrBook>> addressBook)
-        {
-            Console.WriteLine("sortded order");
+            foreach (var item in sortedbyCity)
+            {
+                Console.WriteLine(item.Value.ToString());
+            }
         }
     }
 }
