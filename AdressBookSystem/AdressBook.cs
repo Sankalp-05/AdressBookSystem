@@ -9,13 +9,15 @@ namespace AdressBookSystem
 
     public interface IAddressBookSystem
     {
-        //void GetCustomer();
-
         void ListingPeople();
         void RemovePeople();
     }
     public class AddrBook : IAddressBookSystem
     {
+        public static Dictionary<string, List<AddrBook>> City = new Dictionary<string, List<AddrBook>>();
+        public static Dictionary<string, List<AddrBook>> State = new Dictionary<string, List<AddrBook>>();
+        public List<AddrBook> stateList;
+        public List<AddrBook> cityList;
         public List<AddrBook> people;
         public AddrBook()
         {
@@ -44,6 +46,7 @@ namespace AdressBookSystem
         //Getting the user details
         public void GetCustomer(string firstName, string lastName, string phoneNum, string address, string city, string state, string zipCode, string emailId)
         {
+
             AddrBook person = new AddrBook(firstName, lastName, phoneNum, address, city, state, zipCode, emailId);
             if (people.Count == 0)
             {
@@ -172,12 +175,27 @@ namespace AdressBookSystem
                 return;
             }
             Console.WriteLine("Are you sure you want to remove this person from your address book? (Y/N)");
-            //  PrintCustomer(person);
-
             if (Console.ReadKey().Key == ConsoleKey.Y)
             {
                 people.Remove(person);
                 Console.WriteLine("\nPerson removed ");
+            }
+        }
+        public static void StoreCityList(string key, List<AddrBook> cityList, string city)
+        {
+            List<AddrBook> CityList = cityList.FindAll(a => a.city.ToLower() == city);
+            foreach (var i in CityList)
+            {
+                Console.WriteLine("Found person \"{0}\" in Address Book \"{1}\" , residing in City {2}", i.firstName, key, i.city);
+            }
+        }
+        //Display Person names found in given State
+        public static void StoreStateList(string key, List<AddrBook> stateList, string state)
+        {
+            List<AddrBook> StateList = stateList.FindAll(x => x.state.ToLower() == state);
+            foreach (var i in StateList)
+            {
+                Console.WriteLine("Found person \"{0}\" in Address Book \"{1}\" , residing in State {2}", i.firstName, key, i.state);
             }
         }
     }
