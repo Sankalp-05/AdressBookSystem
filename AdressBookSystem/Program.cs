@@ -2,131 +2,143 @@
 {
     internal class AddBooks
     {
-        static void Main(string[] args)
+        class Program
         {
-            //print Message
-            Console.WriteLine("Welcome to Address Book  System");
-
-            //Create contact
-            CreateContact.PersonDetails();
-            Console.ReadLine();
-
-            //add a new contact
-            AddContact.GetCustomer();
-            AddContact.ListingPeople();
-
-            // Modify existing contact
-            EditContact.GetCustomer();
-            EditContact.Modify();
-            EditContact.ListingPeople();
-
-            //delete a person          
-            DeleteContact.GetCustomer();
-            DeleteContact.Modify();
-            DeleteContact.ListingPeople();
-            DeleteContact.RemovePeople();
-
-            //add multiple person to Address Book
-            Console.WriteLine("Welcome To Address Book System!");
-            Console.WriteLine("1.Enter to add the details");
-            Console.WriteLine("2.Enter to modify the details");
-            Console.WriteLine("3.Listing the details..");
-            Console.WriteLine("4.Remove the details");
-            Console.WriteLine("Enter a option");
-            switch (Console.ReadLine())
+            public static Dictionary<string, List<AddrBook>> addressBook = new Dictionary<string, List<AddrBook>>();
+            public static Dictionary<string, List<AddrBook>> City = new Dictionary<string, List<AddrBook>>();
+            public static Dictionary<string, List<AddrBook>> State = new Dictionary<string, List<AddrBook>>();
+            static void Main(string[] args)
             {
-                case "1":
-                    AddressBook.AddBook.GetCustomer();
-                    AddressBook.AddBook.ListingPeople();
-                    break;
-                case "2":
-                    AddressBook.AddBook.GetCustomer();
-                    AddressBook.AddBook.Modify();
-                    AddressBook.AddBook.ListingPeople();
-                    break;
-                case "3":
-                    AddressBook.AddBook.GetCustomer();
-                    AddressBook.AddBook.ListingPeople();
-                    break;
-                case "4":
-                    AddressBook.AddBook.GetCustomer();
-                    AddressBook.AddBook.RemovePeople();
 
-                    break;
-                default:
-                    Console.WriteLine("Enter a valid option");
-                    break;
+                Console.WriteLine("Welcome to Address Book System!");
+                Console.WriteLine("Enter the number of address books: ");
+                int noOfAddressBook = Convert.ToInt32(Console.ReadLine());
+                int noOfBooks = 0;
+                while (noOfBooks < noOfAddressBook)
+                {
+                    Console.WriteLine("Enter the address book name : ");
+                    string addressbookname = Console.ReadLine();
+                    AddrBook addrBook = new AddrBook();
+                    Console.WriteLine("Enter the no of contacts in the address book: ");
+                    int noOfContact = Convert.ToInt32(Console.ReadLine());
 
+                    while (noOfContact > 0)
+                    {
+                        Console.WriteLine("Enter the details of contact to be added: ");
+
+                        Console.Write("Enter First Name: ");
+                        string FirstName = Console.ReadLine();
+
+                        Console.Write("Enter Last Name: ");
+                        string LastName = Console.ReadLine();
+
+                        Console.Write("Enter Phone Number: ");
+                        string PhoneNumber = Console.ReadLine();
+
+                        Console.Write("Enter Address : ");
+                        string Addresses = Console.ReadLine();
+
+                        Console.Write("Enter City : ");
+                        string City = Console.ReadLine();
+
+                        Console.Write("Enter State : ");
+                        string State = Console.ReadLine();
+
+                        Console.Write("Enter ZipCode: ");
+                        string ZipCode = Console.ReadLine();
+
+                        Console.Write("Enter EmailId: ");
+                        string EmailId = Console.ReadLine();
+                        addrBook.GetCustomer(FirstName, LastName, PhoneNumber, Addresses, City, State, ZipCode, EmailId);
+                        noOfContact--;
+                        Console.WriteLine(" ");
+                        addrBook.ListingPeople();
+                    }
+                    Console.WriteLine("1.To modify the details");
+                    Console.WriteLine("2.To remove the details");
+                    Console.WriteLine("3.Exit from loop");
+                    int option = Convert.ToInt32(Console.ReadLine());
+                    switch (option)
+                    {
+                        case 1:
+                            addrBook.Modify();
+                            Console.WriteLine(" ");
+                            addrBook.ListingPeople();
+                            break;
+                        case 2:
+                            addrBook.RemovePeople();
+                            Console.WriteLine(" ");
+                            addrBook.ListingPeople();
+                            break;
+                    }
+                    if (addressBook.ContainsKey(addressbookname))
+                    {
+                        Console.WriteLine("Existing address book name");
+                        return;
+                    }
+                    else
+                    {
+                        addressBook.Add(addressbookname, addrBook.people);
+                    }
+                    noOfBooks++;
+
+                    foreach (KeyValuePair<string, List<AddrBook>> addr in addressBook)
+                    {
+                        Console.WriteLine("The address Books are:{0}", addr.Key);
+
+                    }
+
+                    Console.WriteLine("Enter 1-To Search a person through a City");
+                    Console.WriteLine("Enter 2-To Search a person through a State");
+                    Console.WriteLine("Enter 3-To view a person by state list or city list");
+                    Console.WriteLine("Enter 4-Sort Contact People");
+                    int opt = Convert.ToInt32(Console.ReadLine());
+                    switch (opt)
+                    {
+
+                        case 1:
+                            SearchAddress(opt);
+                            break;
+                        case 2:
+                            SearchAddress(opt);
+                            break;
+                        case 3:
+                            AddrBook.DisplayCityorState();
+                            break;
+                        case 4:
+                            AddrBook.SortContactPerson(addressBook);
+                            break;
+                        default:
+                            Console.WriteLine("Invalid Option!");
+                            break;
+                    }
+
+                    static void SearchAddress(int option)
+                    {
+                        string city, state;
+                        if (option == 1)
+                        {
+                            Console.WriteLine("Enter the City Name");
+                            city = Console.ReadLine();
+                            foreach (KeyValuePair<string, List<AddrBook>> kvp in addressBook)
+                            {
+                                AddrBook.StoreCityList(kvp.Key, kvp.Value, city);
+
+                            }
+                            if (option == 2)
+                            {
+                                Console.WriteLine("Enter the City Name");
+                                state = Console.ReadLine();
+                                foreach (KeyValuePair<string, List<AddrBook>> kvp in addressBook)
+                                {
+                                    AddrBook.StoreStateList(kvp.Key, kvp.Value, state);
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
-            //add multiple Address Book to the System.
-            Console.WriteLine("Enter number of AddressBook to create");
-            int num = Convert.ToInt32(Console.ReadLine());
-            int i = 0;
-
-            //Create dictionary to store addressbook
-            IDictionary<string, AddressBookSystem[]> numberNames = new Dictionary<string, AddressBookSystem[]>();
-
-            //Runs till number of addressbook needs to be added
-            while (i < num)
-            {
-                //Get input
-                Console.WriteLine("Enter name of addressBook");
-                string addrBookName = Console.ReadLine();
-
-                //Create object for Class
-                AddressBookSystem addressBookSystem = new AddressBookSystem();
-                Console.WriteLine("Enter number of Contacts to Add");
-                int contacts = Convert.ToInt32(Console.ReadLine());
-
-                //Input contacts values from user
-                while (contacts > 0)
-                {
-                    Console.WriteLine("Enter Firstname ");
-                    string firstname = Console.ReadLine();
-                    Console.WriteLine("Enter Lastname ");
-                    string lastname = Console.ReadLine();
-
-                    Console.WriteLine("Enter Address");
-                    string address = Console.ReadLine();
-
-                    Console.WriteLine("Enter City");
-                    string city = Console.ReadLine();
-
-                    Console.WriteLine("Enter State");
-                    string state = Console.ReadLine();
-
-                    Console.WriteLine("Enter pincode");
-                    int pincode = Convert.ToInt32(Console.ReadLine());
-
-                    Console.WriteLine("Enter PhoneNumber ");
-                    long phone = Convert.ToInt64(Console.ReadLine());
-
-                    Console.WriteLine("Enter Email");
-                    string email = Console.ReadLine();
-
-                    //Call Method
-                    addressBookSystem.CreateContact(firstname, lastname, address, city, state, pincode, phone, email);
-                    contacts--;
-                }
-
-                //Check if any modification needed
-                Console.WriteLine("Do you want to Modify?(Y/N)");
-                char ch = Convert.ToChar(Console.ReadLine());
-                if (ch == 'Y')
-                {
-                    addressBookSystem.Modify();
-                }
-
-                //Implements IDictionary<TKey, TValue> interface.
-                numberNames.Add(addrBookName, addressBookSystem.ContactArray);
-                foreach (KeyValuePair<string, AddressBookSystem[]> kvp in numberNames)
-                {
-                    //Console.WriteLine("Key: {0}, Value: {1}", kvp.Key, kvp.Value[0].firstName);              
-                    Console.WriteLine("Key: {0}, Value: {1}", kvp.Key, kvp.Value);
-                }
-                i++;
-            }
         }
     }
 }
