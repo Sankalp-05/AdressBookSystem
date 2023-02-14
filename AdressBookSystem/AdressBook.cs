@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace AdressBookSystem
 {
-
     public interface IAddressBookSystem
     {
         void ListingPeople();
@@ -215,6 +214,7 @@ namespace AdressBookSystem
                 PrintCustomer(person);
             }
             return;
+
         }
         //Removing the field using Lambda Function
         public void RemovePeople()
@@ -233,6 +233,7 @@ namespace AdressBookSystem
             {
                 people.Remove(person);
                 Console.WriteLine("\nPerson removed ");
+
             }
         }
         //Display Person names found in given City
