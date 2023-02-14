@@ -1,12 +1,11 @@
 ﻿namespace AdressBookSystem
 {
-    internal class Program
+    internal class AddBooks
     {
-        public static object AddressBook { get; private set; }
-
         static void Main(string[] args)
         {
-            Console.WriteLine("Welcome to Adress Book System Program !");
+            //print Message
+            Console.WriteLine("Welcome to Address Book  System");
 
             //Create contact
             CreateContact.PersonDetails();
@@ -127,17 +126,6 @@
                     Console.WriteLine("Key: {0}, Value: {1}", kvp.Key, kvp.Value);
                 }
                 i++;
-            }
-        }
-        //Display Details
-        public void Display(AddressBookSystem[] ContactArray, int N)
-        {
-            Console.WriteLine("---------Address Book Contains---------");
-            int i;
-            for (i = 0; i < N; i++)
-            {
-                Console.WriteLine("First name: {0}\n Last name: {1}\n Address: {2}\n City: {3}\n Zip: {4}\n State: {5}\n Phone Number: {6}\n Email: {7} \n", ContactArray[i].firstName, ContactArray[i].lastName, ContactArray[i].Address, ContactArray[i].city, ContactArray[i].zip, ContactArray[i].state, ContactArray[i].phoneNumber, ContactArray[i].email);
-
             }
         }
     }

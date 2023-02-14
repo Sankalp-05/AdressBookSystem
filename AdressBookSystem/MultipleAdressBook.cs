@@ -46,7 +46,7 @@ namespace AdressBookSystem
             ContactArray[this.contact] = new AddressBookSystem(firstName, lastName, Address, city, state, zip, phoneNumber, email);
             contact++;
             AddBooks obj = new AddBooks();
-            obj.Display(ContactArray, contact);
+            //obj.Display(ContactArray, contact);
         }
         //Function call To modify
         public void Modify()
@@ -115,10 +115,6 @@ namespace AdressBookSystem
                     Console.WriteLine("Invalid Option");
                     break;
             }
-            //Display Function
-            AddBooks obj = new AddBooks();
-            obj.Display(ContactArray, contact);
-
         }
     }
 }
